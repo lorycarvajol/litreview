@@ -3,9 +3,26 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm  # Corrige l'importation ici
-from .models import Profile
+from .models import Profile, Ticket
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+from .forms import TicketForm
+
+
+@login_required
+def create_ticket(request):
+    if request.method == "POST":
+        form = TicketForm(request.POST, request.FILES)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.user = request.user
+            ticket.save()
+            return redirect(
+                "home"
+            )  # Redirige vers la page d'accueil après la création du ticket
+    else:
+        form = TicketForm()
+    return render(request, "reviews/create_ticket.html", {"form": form})
 
 
 def custom_logout_view(request):
@@ -24,10 +41,15 @@ class CustomLoginView(LoginView):
 
 @login_required
 def home_view(request):
+    # Récupérer les tickets créés par l'utilisateur connecté
+    tickets = Ticket.objects.filter(user=request.user).order_by("-time_created")
     print(
         f"User authenticated: {request.user.is_authenticated}"
     )  # Vérification de l'authentification
-    return render(request, "reviews/home.html")
+    context = {
+        "tickets": tickets,
+    }
+    return render(request, "reviews/home.html", context)
 
 
 def register(request):

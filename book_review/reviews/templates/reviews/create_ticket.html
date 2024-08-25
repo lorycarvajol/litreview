@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Créer un ticket{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Créer un ticket</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_title" class="form-label">Titre</label>
+            {{ form.title }}
+        </div>
+        <div class="mb-3">
+            <label for="id_description" class="form-label">Description</label>
+            {{ form.description }}
+        </div>
+        <div class="mb-3">
+            <label for="id_image" class="form-label">Image</label>
+            {{ form.image }}
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+</div>
+{% endblock %}

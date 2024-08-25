@@ -2,6 +2,18 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
+from .models import Ticket
+
+
+class TicketForm(forms.ModelForm):
+    class Meta:
+        model = Ticket
+        fields = ["title", "description", "image"]
+        widgets = {
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control"}),
+            "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
+        }
 
 
 class CustomAuthenticationForm(AuthenticationForm):

@@ -15,42 +15,30 @@
     </div>
 
     <div class="mb-4 text-center">
-        <a href="#" class="btn btn-primary">Demander une critique</a>
+        <a href="{% url 'create_ticket' %}" class="btn btn-primary">Demander une critique</a>
         <a href="#" class="btn btn-secondary">Créer une critique</a>
     </div>
 
-    <!-- Exemple de posts -->
+    <!-- Affichage des tickets -->
+    {% for ticket in tickets %}
     <div class="card mb-3">
         <div class="card-body">
-            <h5 class="card-title">Vous avez publié une critique</h5>
-            <h6 class="card-subtitle mb-2 text-muted">véritablement révolutionnaire - ★★★★★</h6>
-            <p class="card-text">Une excellente lecture et je vous recommande vivement !</p>
+            <h5 class="card-title">{{ ticket.title }}</h5>
+            <p class="card-text">{{ ticket.description }}</p>
+            {% if ticket.image %}
             <div class="card mb-2">
                 <div class="row g-0">
                     <div class="col-md-4">
-                        <img src="path/to/book_image.jpg" class="img-fluid rounded-start" alt="Book image">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <p class="card-text"><strong>Ticket - jean8597</strong></p>
-                            <p class="card-text">The Origin of Species - Charles Darwin</p>
-                        </div>
+                        <img src="{{ ticket.image.url }}" class="img-fluid rounded-start" alt="Image du ticket">
                     </div>
                 </div>
             </div>
-            <p class="card-text"><small class="text-muted">13:14, 26 août 2020</small></p>
+            {% endif %}
+            <p class="card-text"><small class="text-muted">{{ ticket.time_created|date:"H:i, d M Y" }}</small></p>
         </div>
     </div>
-
-    <div class="card mb-3">
-        <div class="card-body">
-            <h5 class="card-title">sarahj a demandé une critique</h5>
-            <p class="card-text">Une brève histoire du temps - Stephen Hawking</p>
-            <a href="#" class="btn btn-primary">Créer une critique</a>
-            <p class="card-text mt-3"><small class="text-muted">5:14, 26 août 2020</small></p>
-        </div>
-    </div>
-
-    <!-- Plus de posts ici -->
+    {% empty %}
+    <p class="text-center">Aucun ticket disponible.</p>
+    {% endfor %}
 </div>
 {% endblock %}
