@@ -3,12 +3,54 @@
 {% block title %}Accueil{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Bienvenue sur LITReview</h1>
-    <p>Ceci est une page d'accueil provisoire. Votre connexion a réussi.</p>
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Se déconnecter</button>
-    </form>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-4">
+        <h1 class="h3">LITReview</h1>
+        <nav>
+            <a href="{% url 'home' %}" class="btn btn-outline-primary">Flux</a>
+            <a href="#" class="btn btn-outline-primary">Posts</a>
+            <a href="#" class="btn btn-outline-primary">Abonnements</a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-danger">Se déconnecter</a>
+        </nav>
+    </div>
+
+    <div class="mb-4 text-center">
+        <a href="#" class="btn btn-primary">Demander une critique</a>
+        <a href="#" class="btn btn-secondary">Créer une critique</a>
+    </div>
+
+    <!-- Exemple de posts -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Vous avez publié une critique</h5>
+            <h6 class="card-subtitle mb-2 text-muted">véritablement révolutionnaire - ★★★★★</h6>
+            <p class="card-text">Une excellente lecture et je vous recommande vivement !</p>
+            <div class="card mb-2">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="path/to/book_image.jpg" class="img-fluid rounded-start" alt="Book image">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <p class="card-text"><strong>Ticket - jean8597</strong></p>
+                            <p class="card-text">The Origin of Species - Charles Darwin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="card-text"><small class="text-muted">13:14, 26 août 2020</small></p>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">sarahj a demandé une critique</h5>
+            <p class="card-text">Une brève histoire du temps - Stephen Hawking</p>
+            <a href="#" class="btn btn-primary">Créer une critique</a>
+            <p class="card-text mt-3"><small class="text-muted">5:14, 26 août 2020</small></p>
+        </div>
+    </div>
+
+    <!-- Plus de posts ici -->
 </div>
 {% endblock %}
