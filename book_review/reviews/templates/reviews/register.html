@@ -1,0 +1,27 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center">Inscription</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" enctype="multipart/form-data" action="{% url 'register' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        {{ form.errors }}
+                    </div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">S'inscrire</button>
+            </form>
+        </div>
+        <div class="col-md-6 text-center">
+            <h3>Déjà inscrit?</h3>
+            <a href="{% url 'login' %}" class="btn btn-secondary">Se connecter</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

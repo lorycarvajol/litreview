@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Bienvenue sur LITReview</h1>
+    <p>Ceci est une page d'accueil provisoire. Votre connexion a réussi.</p>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Se déconnecter</button>
+    </form>
+</div>
+{% endblock %}

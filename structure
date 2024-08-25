@@ -1,0 +1,41 @@
+litreview/
+│
+├── litreview/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   └── wsgi.py
+│
+├── reviews/
+│   ├── migrations/
+│   │   ├── __init__.py
+│   │   └── (autres fichiers de migration générés par Django)
+│   ├── templates/
+│   │   └── reviews/
+│   │       ├── ticket_form.html
+│   │       ├── ticket_list.html
+│   │       ├── review_form.html
+│   │       ├── review_list.html
+│   │       ├── userfollows_form.html
+│   │       └── userfollows_list.html
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── (fichiers CSS personnalisés)
+│   │   ├── js/
+│   │   │   └── (fichiers JavaScript personnalisés)
+│   │   └── images/
+│   │       └── (fichiers d'image)
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   ├── views.py
+│   └── forms.py
+│
+├── manage.py
+├── venv/ (optionnel, si tu utilises un environnement virtuel ici)
+├── db.sqlite3 (fichier de base de données SQLite généré)
+└── README.md
