@@ -1,0 +1,39 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Créer une critique{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="h3">Créer une critique</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-4">
+            <h4>Livre / Article</h4>
+            <div class="mb-3">
+                {{ form.ticket_title.label_tag }}{{ form.ticket_title }}
+            </div>
+            <div class="mb-3">
+                {{ form.ticket_description.label_tag }}{{ form.ticket_description }}
+            </div>
+            <div class="mb-3">
+                {{ form.ticket_image.label_tag }}{{ form.ticket_image }}
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <h4>Critique</h4>
+            <div class="mb-3">
+                {{ form.review_headline.label_tag }}{{ form.review_headline }}
+            </div>
+            <div class="mb-3">
+                {{ form.review_rating.label_tag }}{{ form.review_rating }}
+            </div>
+            <div class="mb-3">
+                {{ form.review_body.label_tag }}{{ form.review_body }}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+</div>
+{% endblock %}

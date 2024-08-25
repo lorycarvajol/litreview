@@ -27,13 +27,11 @@ class Ticket(models.Model):
 
 
 class Review(models.Model):
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-    rating = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(5)]
-    )
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    ticket = models.ForeignKey(Ticket, null=True, blank=True, on_delete=models.SET_NULL)
     headline = models.CharField(max_length=128)
-    body = models.TextField(max_length=8192, blank=True)
+    rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(6)])
+    body = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     time_created = models.DateTimeField(auto_now_add=True)
 
 

@@ -2,10 +2,42 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm  # Corrige l'importation ici
+from .forms import (
+    AutonomousReviewForm,
+    CustomUserCreationForm,
+)  # Corrige l'importation ici
 from .models import Profile, Ticket, Review
 from django.contrib.auth import logout
 from .forms import TicketForm, ReviewForm
+
+
+@login_required
+def create_review_autonomous(request):
+    if request.method == "POST":
+        form = AutonomousReviewForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Créer le ticket
+            ticket = Ticket.objects.create(
+                title=form.cleaned_data["ticket_title"],
+                description=form.cleaned_data["ticket_description"],
+                image=form.cleaned_data["ticket_image"],
+                user=request.user,
+            )
+
+            # Créer la critique associée
+            Review.objects.create(
+                ticket=ticket,
+                headline=form.cleaned_data["review_headline"],
+                rating=form.cleaned_data["review_rating"],
+                body=form.cleaned_data["review_body"],
+                user=request.user,
+            )
+
+            return redirect("home")
+    else:
+        form = AutonomousReviewForm()
+
+    return render(request, "reviews/create_review_autonomous.html", {"form": form})
 
 
 @login_required
@@ -71,8 +103,12 @@ def home_view(request):
         ).first()  # On suppose qu'un seul review par ticket
         tickets_with_reviews.append((ticket, ticket_review))
 
+    # Critiques autonomes
+    autonomous_reviews = Review.objects.filter(ticket__isnull=True, user=request.user)
+
     context = {
         "tickets_with_reviews": tickets_with_reviews,
+        "autonomous_reviews": autonomous_reviews,
     }
     return render(request, "reviews/home.html", context)
 

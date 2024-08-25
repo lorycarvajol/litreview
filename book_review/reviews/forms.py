@@ -5,15 +5,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import Review, Ticket
 
 
-class ReviewForm(forms.ModelForm):
-    class Meta:
-        model = Review
-        fields = ["headline", "rating", "body"]
-        widgets = {
-            "headline": forms.TextInput(attrs={"class": "form-control"}),
-            "rating": forms.RadioSelect(choices=[(i, str(i)) for i in range(6)]),
-            "body": forms.Textarea(attrs={"class": "form-control"}),
-        }
+from django import forms
+from .models import Review, Ticket
 
 
 class TicketForm(forms.ModelForm):
@@ -24,6 +17,47 @@ class TicketForm(forms.ModelForm):
             "title": forms.TextInput(attrs={"class": "form-control"}),
             "description": forms.Textarea(attrs={"class": "form-control"}),
             "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
+        }
+
+
+class AutonomousReviewForm(forms.Form):
+    # Champs pour le Livre/Article
+    ticket_title = forms.CharField(
+        label="Titre",
+        max_length=128,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    ticket_description = forms.CharField(
+        label="Description", widget=forms.Textarea(attrs={"class": "form-control"})
+    )
+    ticket_image = forms.ImageField(
+        label="Image",
+        required=False,
+        widget=forms.ClearableFileInput(attrs={"class": "form-control"}),
+    )
+
+    # Champs pour la Critique
+    review_headline = forms.CharField(
+        label="Titre de la critique",
+        max_length=128,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    review_rating = forms.ChoiceField(
+        label="Note", choices=[(i, str(i)) for i in range(6)], widget=forms.RadioSelect
+    )
+    review_body = forms.CharField(
+        label="Commentaire", widget=forms.Textarea(attrs={"class": "form-control"})
+    )
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ["headline", "rating", "body"]
+        widgets = {
+            "headline": forms.TextInput(attrs={"class": "form-control"}),
+            "rating": forms.RadioSelect(choices=[(i, str(i)) for i in range(6)]),
+            "body": forms.Textarea(attrs={"class": "form-control"}),
         }
 
 
