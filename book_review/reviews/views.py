@@ -1,12 +1,31 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm  # Corrige l'importation ici
-from .models import Profile, Ticket
+from .models import Profile, Ticket, Review
 from django.contrib.auth import logout
-from django.shortcuts import redirect
-from .forms import TicketForm
+from .forms import TicketForm, ReviewForm
+
+
+@login_required
+def create_review(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.ticket = ticket
+            review.user = request.user
+            review.save()
+            return redirect(
+                "home"
+            )  # Redirige vers la page d'accueil après la création de la critique
+    else:
+        form = ReviewForm()
+    return render(
+        request, "reviews/create_review.html", {"form": form, "ticket": ticket}
+    )
 
 
 @login_required
@@ -41,13 +60,19 @@ class CustomLoginView(LoginView):
 
 @login_required
 def home_view(request):
-    # Récupérer les tickets créés par l'utilisateur connecté
     tickets = Ticket.objects.filter(user=request.user).order_by("-time_created")
-    print(
-        f"User authenticated: {request.user.is_authenticated}"
-    )  # Vérification de l'authentification
+    reviews = Review.objects.filter(user=request.user)
+
+    # Créer une liste de tickets avec la critique associée si elle existe
+    tickets_with_reviews = []
+    for ticket in tickets:
+        ticket_review = reviews.filter(
+            ticket=ticket
+        ).first()  # On suppose qu'un seul review par ticket
+        tickets_with_reviews.append((ticket, ticket_review))
+
     context = {
-        "tickets": tickets,
+        "tickets_with_reviews": tickets_with_reviews,
     }
     return render(request, "reviews/home.html", context)
 

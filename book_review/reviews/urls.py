@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CustomLoginView, create_ticket, register
+from .views import CustomLoginView, create_review, create_ticket, register
 from django.contrib.auth.views import LogoutView
 from .views import CustomLoginView, register, home_view, custom_logout_view
 
@@ -11,4 +11,7 @@ urlpatterns = [
     path(
         "ticket/create/", create_ticket, name="create_ticket"
     ),  # URL pour créer un ticket
+    path(
+        "review/create/<int:ticket_id>/", create_review, name="create_review"
+    ),  # URL pour créer une critique
 ]

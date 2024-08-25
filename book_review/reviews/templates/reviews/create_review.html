@@ -1,0 +1,36 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Créer une critique{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Créer une critique</h2>
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ ticket.title }}</h5>
+            <p class="card-text">{{ ticket.description }}</p>
+            {% if ticket.image %}
+            <img src="{{ ticket.image.url }}" class="img-fluid rounded" alt="Image du ticket">
+            {% endif %}
+            <p class="card-text"><small class="text-muted">{{ ticket.time_created|date:"H:i, d M Y" }}</small></p>
+        </div>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_headline" class="form-label">Titre</label>
+            {{ form.headline }}
+        </div>
+        <div class="mb-3">
+            <label for="id_rating" class="form-label">Note</label>
+            {{ form.rating }}
+        </div>
+        <div class="mb-3">
+            <label for="id_body" class="form-label">Commentaire</label>
+            {{ form.body }}
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+</div>
+{% endblock %}

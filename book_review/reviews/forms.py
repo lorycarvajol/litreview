@@ -2,7 +2,18 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Ticket
+from .models import Review, Ticket
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ["headline", "rating", "body"]
+        widgets = {
+            "headline": forms.TextInput(attrs={"class": "form-control"}),
+            "rating": forms.RadioSelect(choices=[(i, str(i)) for i in range(6)]),
+            "body": forms.Textarea(attrs={"class": "form-control"}),
+        }
 
 
 class TicketForm(forms.ModelForm):
