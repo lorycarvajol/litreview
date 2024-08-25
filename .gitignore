@@ -1,0 +1,48 @@
+# Environnements virtuels
+venv/
+env/
+ENV/
+.venv/
+
+# Fichiers de configuration spécifiques à l'IDE
+*.vscode/
+*.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Fichiers Python compilés
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Fichiers SQLite (base de données locale)
+db.sqlite3
+db.sqlite3-journal
+
+# Fichiers de migration Django
+*/migrations/*
+
+# Fichiers statiques et médias
+static/
+media/
+
+# Fichiers de log
+*.log
+*.log.*
+
+# Fichiers et dossiers cachés par macOS
+.DS_Store
+
+# Fichiers de l'éditeur Vim
+*.swp
+
+# Fichiers de Jupyter Notebook (si utilisé)
+.ipynb_checkpoints/
+
+# Fichiers d'application de cache et de session
+*.cache
+*.session
+
+# Fichiers de dump de bases de données
+*.sql
+*.sqlite3
