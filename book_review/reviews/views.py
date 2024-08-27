@@ -215,19 +215,31 @@ class CustomLoginView(LoginView):
 
 @login_required
 def home_view(request):
+    search_query = request.GET.get(
+        "q", ""
+    )  # Récupérer la recherche depuis les paramètres GET
     tickets = Ticket.objects.filter(user=request.user).order_by("-time_created")
     reviews = Review.objects.filter(user=request.user)
 
+    if search_query:
+        tickets = tickets.filter(title__icontains=search_query)
+        reviews = reviews.filter(headline__icontains=search_query)
+
+    # Créer une liste de tickets avec la critique associée si elle existe
     tickets_with_reviews = []
     for ticket in tickets:
-        ticket_review = reviews.filter(ticket=ticket).first()
+        ticket_review = reviews.filter(
+            ticket=ticket
+        ).first()  # On suppose qu'un seul review par ticket
         tickets_with_reviews.append((ticket, ticket_review))
 
+    # Critiques autonomes
     autonomous_reviews = Review.objects.filter(ticket__isnull=True, user=request.user)
 
     context = {
         "tickets_with_reviews": tickets_with_reviews,
         "autonomous_reviews": autonomous_reviews,
+        "search_query": search_query,  # Passer la recherche dans le contexte
     }
     return render(request, "reviews/home.html", context)
 

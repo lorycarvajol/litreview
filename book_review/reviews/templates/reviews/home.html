@@ -14,6 +14,14 @@
         </nav>
     </div>
 
+    <!-- Formulaire de recherche -->
+    <form method="GET" action="{% url 'home' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Rechercher un livre..." value="{{ search_query }}">
+            <button class="btn btn-primary" type="submit">Rechercher</button>
+        </div>
+    </form>
+
     <div class="mb-4 text-center">
         <a href="{% url 'create_ticket' %}" class="btn btn-primary">Demander une critique</a>
         <a href="{% url 'create_review_autonomous' %}" class="btn btn-primary">Créer une critique</a>
@@ -62,6 +70,11 @@
         </div>
     </div>
     {% endfor %}
+
+    <!-- Affichage message en cas d'absence de résultats -->
+    {% if not tickets_with_reviews and not autonomous_reviews %}
+    <p class="text-center">Aucun post trouvé pour ce livre.</p>
+    {% endif %}
 
 </div>
 {% endblock %}

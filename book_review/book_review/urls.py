@@ -30,3 +30,7 @@ urlpatterns = [
     path("", redirect_to_login),
     path("", include("reviews.urls")),  # Inclut les URLs de ton application
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

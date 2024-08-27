@@ -140,5 +140,7 @@ LOGIN_REDIRECT_URL = "/home"
 LOGIN_URL = "/login/"
 LOGOUT_REDIRECT_URL = "/login/"
 
+STATIC_ROOT = BASE_DIR / "staticfiles"  # Ajoutez cette ligne si ce n'est pas déjà fait
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
