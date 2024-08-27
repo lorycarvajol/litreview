@@ -1,0 +1,49 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Mes Posts{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="h3">Mes Posts</h1>
+
+    <h2 class="h5 mt-4">Tickets</h2>
+    {% for ticket in tickets %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ ticket.title }}</h5>
+            <p class="card-text">{{ ticket.description }}</p>
+            {% if ticket.image %}
+            <div class="card mb-2">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="{{ ticket.image.url }}" class="img-fluid rounded-start" alt="Image du ticket">
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <p class="card-text"><small class="text-muted">{{ ticket.time_created|date:"H:i, d M Y" }}</small></p>
+            <a href="{% url 'edit_ticket' ticket.id %}" class="btn btn-primary">Modifier</a>
+            <a href="{% url 'delete_ticket' ticket.id %}" class="btn btn-danger">Supprimer</a>
+        </div>
+    </div>
+    {% empty %}
+    <p>Aucun ticket disponible.</p>
+    {% endfor %}
+
+    <h2 class="h5 mt-4">Critiques</h2>
+    {% for review in reviews %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ review.headline }}</h5>
+            <p class="card-text">Note: {{ review.rating }}</p>
+            <p class="card-text">{{ review.body }}</p>
+            <p class="card-text"><small class="text-muted">{{ review.time_created|date:"H:i, d M Y" }}</small></p>
+            <a href="{% url 'edit_review' review.id %}" class="btn btn-primary">Modifier</a>
+            <a href="{% url 'delete_review' review.id %}" class="btn btn-danger">Supprimer</a>
+        </div>
+    </div>
+    {% empty %}
+    <p>Aucune critique disponible.</p>
+    {% endfor %}
+</div>
+{% endblock %}

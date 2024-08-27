@@ -6,9 +6,67 @@ from .forms import (
     AutonomousReviewForm,
     CustomUserCreationForm,
 )  # Corrige l'importation ici
-from .models import Profile, Ticket, Review
 from django.contrib.auth import logout
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Ticket, Review
 from .forms import TicketForm, ReviewForm
+
+
+@login_required
+def user_posts_view(request):
+    # Récupérer les tickets et critiques de l'utilisateur connecté
+    tickets = Ticket.objects.filter(user=request.user).order_by("-time_created")
+    reviews = Review.objects.filter(user=request.user).order_by("-time_created")
+
+    context = {
+        "tickets": tickets,
+        "reviews": reviews,
+    }
+    return render(request, "reviews/user_posts.html", context)
+
+
+@login_required
+def edit_ticket(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id, user=request.user)
+    if request.method == "POST":
+        form = TicketForm(request.POST, request.FILES, instance=ticket)
+        if form.is_valid():
+            form.save()
+            return redirect("user_posts")
+    else:
+        form = TicketForm(instance=ticket)
+    return render(request, "reviews/edit_ticket.html", {"form": form})
+
+
+@login_required
+def delete_ticket(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id, user=request.user)
+    if request.method == "POST":
+        ticket.delete()
+        return redirect("user_posts")
+    return render(request, "reviews/delete_ticket.html", {"ticket": ticket})
+
+
+@login_required
+def edit_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id, user=request.user)
+    if request.method == "POST":
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect("user_posts")
+    else:
+        form = ReviewForm(instance=review)
+    return render(request, "reviews/edit_review.html", {"form": form})
+
+
+@login_required
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id, user=request.user)
+    if request.method == "POST":
+        review.delete()
+        return redirect("user_posts")
+    return render(request, "reviews/delete_review.html", {"review": review})
 
 
 @login_required

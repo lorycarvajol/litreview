@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Supprimer Critique{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="h3">Supprimer Critique</h1>
+    <p>Êtes-vous sûr de vouloir supprimer cette critique?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+        <a href="{% url 'user_posts' %}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}
