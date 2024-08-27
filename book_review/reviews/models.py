@@ -35,13 +35,13 @@ class Review(models.Model):
     time_created = models.DateTimeField(auto_now_add=True)
 
 
-class UserFollows(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="following"
+class Subscription(models.Model):
+    follower = models.ForeignKey(
+        User, related_name="following", on_delete=models.CASCADE
     )
-    followed_user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="followed_by"
+    followed = models.ForeignKey(
+        User, related_name="followers", on_delete=models.CASCADE
     )
 
-    class Meta:
-        unique_together = ("user", "followed_user")
+    def __str__(self):
+        return f"{self.follower.username} suit {self.followed.username}"

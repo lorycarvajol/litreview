@@ -2,19 +2,90 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
-from .forms import (
-    AutonomousReviewForm,
-    CustomUserCreationForm,
-)  # Corrige l'importation ici
+from .forms import AutonomousReviewForm, CustomUserCreationForm, TicketForm, ReviewForm
+from .models import Ticket, Review, Subscription
 from django.contrib.auth import logout
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Ticket, Review
-from .forms import TicketForm, ReviewForm
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+
+
+@login_required
+def followed_user_posts_view(request, user_id):
+    followed_user = get_object_or_404(User, id=user_id)
+    posts = followed_user.posts.all().order_by("-time_created")
+
+    context = {
+        "followed_user": followed_user,
+        "posts": posts,
+    }
+    return render(request, "reviews/followed_user_posts.html", context)
+
+
+@login_required
+def search_users(request):
+    query = request.GET.get("q", "")
+    if query:
+        users = User.objects.filter(username__icontains=query).exclude(
+            id=request.user.id
+        )
+        users_data = [{"id": user.id, "username": user.username} for user in users]
+        return JsonResponse({"users": users_data})
+    return JsonResponse({"users": []})
+
+
+@login_required
+def subscription_view(request):
+    query = request.GET.get("q")
+    users = User.objects.exclude(username=request.user.username)
+    if query:
+        users = users.filter(username__icontains=query)
+
+    following = Subscription.objects.filter(follower=request.user)
+    following_users = [sub.followed for sub in following]
+
+    context = {
+        "users": users,
+        "following_users": following_users,
+    }
+    return render(request, "reviews/subscription.html", context)
+
+
+@login_required
+def follow_user(request, user_id):
+    user_to_follow = get_object_or_404(User, id=user_id)
+    Subscription.objects.get_or_create(follower=request.user, followed=user_to_follow)
+
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return JsonResponse({"success": True, "username": user_to_follow.username})
+
+    return redirect("subscription")
+
+
+@login_required
+def unfollow_user(request, user_id):
+    user_to_unfollow = get_object_or_404(User, id=user_id)
+    Subscription.objects.filter(
+        follower=request.user, followed=user_to_unfollow
+    ).delete()
+    return redirect("subscription")
+
+
+@login_required
+def followed_user_posts_view(request, user_id):
+    followed_user = get_object_or_404(User, id=user_id)
+    tickets = Ticket.objects.filter(user=followed_user).order_by("-time_created")
+    reviews = Review.objects.filter(user=followed_user).order_by("-time_created")
+
+    context = {
+        "followed_user": followed_user,
+        "tickets": tickets,
+        "reviews": reviews,
+    }
+    return render(request, "reviews/followed_user_posts.html", context)
 
 
 @login_required
 def user_posts_view(request):
-    # Récupérer les tickets et critiques de l'utilisateur connecté
     tickets = Ticket.objects.filter(user=request.user).order_by("-time_created")
     reviews = Review.objects.filter(user=request.user).order_by("-time_created")
 
@@ -74,7 +145,6 @@ def create_review_autonomous(request):
     if request.method == "POST":
         form = AutonomousReviewForm(request.POST, request.FILES)
         if form.is_valid():
-            # Créer le ticket
             ticket = Ticket.objects.create(
                 title=form.cleaned_data["ticket_title"],
                 description=form.cleaned_data["ticket_description"],
@@ -82,7 +152,6 @@ def create_review_autonomous(request):
                 user=request.user,
             )
 
-            # Créer la critique associée
             Review.objects.create(
                 ticket=ticket,
                 headline=form.cleaned_data["review_headline"],
@@ -108,9 +177,7 @@ def create_review(request, ticket_id):
             review.ticket = ticket
             review.user = request.user
             review.save()
-            return redirect(
-                "home"
-            )  # Redirige vers la page d'accueil après la création de la critique
+            return redirect("home")
     else:
         form = ReviewForm()
     return render(
@@ -126,9 +193,7 @@ def create_ticket(request):
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
-            return redirect(
-                "home"
-            )  # Redirige vers la page d'accueil après la création du ticket
+            return redirect("home")
     else:
         form = TicketForm()
     return render(request, "reviews/create_ticket.html", {"form": form})
@@ -144,8 +209,8 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         print(f"Authenticating user: {form.get_user()}")
-        login(self.request, form.get_user())  # Authentifier l'utilisateur manuellement
-        return redirect("/home/")  # Rediriger explicitement vers la page d'accueil
+        login(self.request, form.get_user())
+        return redirect("/home/")
 
 
 @login_required
@@ -153,15 +218,11 @@ def home_view(request):
     tickets = Ticket.objects.filter(user=request.user).order_by("-time_created")
     reviews = Review.objects.filter(user=request.user)
 
-    # Créer une liste de tickets avec la critique associée si elle existe
     tickets_with_reviews = []
     for ticket in tickets:
-        ticket_review = reviews.filter(
-            ticket=ticket
-        ).first()  # On suppose qu'un seul review par ticket
+        ticket_review = reviews.filter(ticket=ticket).first()
         tickets_with_reviews.append((ticket, ticket_review))
 
-    # Critiques autonomes
     autonomous_reviews = Review.objects.filter(ticket__isnull=True, user=request.user)
 
     context = {
@@ -182,7 +243,7 @@ def register(request):
                 user.profile.avatar = request.FILES["avatar"]
                 user.profile.save()
             login(request, user)
-            return redirect("home")  # Redirection après inscription
+            return redirect("home")
         else:
             print("Form is not valid")
     else:

@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% block title %}Posts de {{ followed_user.username }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Posts de {{ followed_user.username }}</h1>
+
+    {% if posts %}
+        {% for post in posts %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    {% if post.title %}
+                        <h5 class="card-title">{{ post.title }}</h5>
+                    {% endif %}
+                    {% if post.description %}
+                        <p class="card-text">{{ post.description }}</p>
+                    {% endif %}
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" class="img-fluid" alt="Image du post">
+                    {% endif %}
+                    <p class="card-text"><small class="text-muted">{{ post.time_created|date:"H:i, d M Y" }}</small></p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-center">Cet utilisateur n'a pas encore créé de post.</p>
+    {% endif %}
+</div>
+{% endblock %}
