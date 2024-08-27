@@ -2,6 +2,15 @@
 
 {% block title %}Posts de {{ followed_user.username }}{% endblock %}
 
+{% load static %}
+{% block background_image %}
+background-image: url('{% static "images/follow.png" %}');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+{% endblock %} 
+
 {% block content %}
 <div class="container mt-4">
     <h1>Posts de {{ followed_user.username }}</h1>

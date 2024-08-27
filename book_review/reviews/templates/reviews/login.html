@@ -1,5 +1,14 @@
 {% extends "base_generic.html" %}
 
+{% load static %}
+{% block background_image %}
+background-image: url('{% static "images/login.png" %}');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+{% endblock %} 
+
 {% block content %}
 <div class="container">
     <h2 class="text-center">Connexion</h2>

@@ -2,6 +2,15 @@
 
 {% block title %}Créer une critique{% endblock %}
 
+{% load static %}
+{% block background_image %}
+background-image: url('{% static "images/creation.png" %}');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+{% endblock %} 
+
 {% block content %}
 <div class="container mt-4">
     <h1 class="h3">Créer une critique</h1>

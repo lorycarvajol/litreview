@@ -2,6 +2,15 @@
 
 {% block title %}Modifier Ticket{% endblock %}
 
+{% load static %}
+{% block background_image %}
+background-image: url('{% static "images/modify.png" %}');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+{% endblock %} 
+
 {% block content %}
 <div class="container mt-4">
     <h1 class="h3">Modifier Ticket</h1>

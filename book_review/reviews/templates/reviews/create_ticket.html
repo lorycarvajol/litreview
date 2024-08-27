@@ -2,6 +2,15 @@
 
 {% block title %}Créer un ticket{% endblock %}
 
+{% load static %}
+{% block background_image %}
+background-image: url('{% static "images/creation.png" %}');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+{% endblock %} 
+
 {% block content %}
 <div class="container mt-4">
     <h2>Créer un ticket</h2>
