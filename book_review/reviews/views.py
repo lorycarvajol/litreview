@@ -218,10 +218,13 @@ def home_view(request):
     search_query = request.GET.get(
         "q", ""
     )  # Récupérer la recherche depuis les paramètres GET
-    tickets = Ticket.objects.filter(user=request.user).order_by("-time_created")
-    reviews = Review.objects.filter(user=request.user)
+
+    # Récupérer tous les tickets et critiques de tous les utilisateurs
+    tickets = Ticket.objects.all().order_by("-time_created")
+    reviews = Review.objects.all()
 
     if search_query:
+        # Filtrer les tickets et critiques par titre et en-tête si une recherche est spécifiée
         tickets = tickets.filter(title__icontains=search_query)
         reviews = reviews.filter(headline__icontains=search_query)
 
@@ -234,7 +237,7 @@ def home_view(request):
         tickets_with_reviews.append((ticket, ticket_review))
 
     # Critiques autonomes
-    autonomous_reviews = Review.objects.filter(ticket__isnull=True, user=request.user)
+    autonomous_reviews = Review.objects.filter(ticket__isnull=True)
 
     context = {
         "tickets_with_reviews": tickets_with_reviews,
