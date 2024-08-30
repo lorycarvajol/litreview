@@ -9,77 +9,86 @@ background-size: cover;
 background-position: center;
 background-repeat: no-repeat;
 background-attachment: fixed;
-{% endblock %} 
+{% endblock %}
 
 {% block content %}
-<div class="container-fluid mt-4 home-page">
-
-    <!-- Formulaire de recherche -->
-    <div class="glass-box p-3 mb-4">
-        <form method="GET" action="{% url 'home' %}">
-            <div class="input-group">
-                <input type="text" name="q" class="form-control" placeholder="Rechercher un livre..." value="{{ search_query }}">
-                <button class="btn btn-primary" type="submit">Rechercher</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="glass-box p-3 mb-4 text-center">
-        <a href="{% url 'create_ticket' %}" class="btn btn-primary">Demander une critique</a>
-        <a href="{% url 'create_review_autonomous' %}" class="btn btn-primary">Créer une critique</a>
-    </div>
-
-    <!-- Affichage des tickets et critiques -->
-    {% for ticket, review in tickets_with_reviews %}
-    <div class="glass-box card mb-3 p-3">
-        <div class="card-body">
-            <p class="card-text"><strong>Auteur du ticket :</strong> {{ ticket.user.username }}</p>
-            <p class="card-text">{{ ticket.description }}</p>
-            <h5 class="card-title">{{ ticket.title }}</h5>
-            <p class="card-text">{{ ticket.description }}</p>
-            {% if ticket.image %}
-            <div class="card mb-2">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="{{ ticket.image.url }}" class="img-fluid rounded-start" alt="Image du ticket">
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-            <p class="card-text"><small class="text-muted">{{ ticket.time_created|date:"H:i, d M Y" }}</small></p>
-            
-            {% if review %}
-                <div class="glass-box card mt-3 p-3">
-                    <div class="card-body">
-                        <p class="card-text"><strong>Auteur de la critique :</strong> {{ review.user.username }}</p>
-                        <h5 class="card-title">{{ review.headline }}</h5>
-                        <p class="card-text">Note: {{ review.rating }}</p>
-                        <p class="card-text">{{ review.body }}</p>
-                    </div>
-                </div>
-            {% else %}
-                <a href="{% url 'create_review' ticket.id %}" class="btn btn-secondary">Créer une critique</a>
-            {% endif %}
+<div class="home-container">
+    <div class="home-card ">
+        <div class="mb-4 text-center">
+            <a href="{% url 'create_ticket' %}" class="btn btn-custom mx-2">Demander une critique</a>
+            <a href="{% url 'create_review_autonomous' %}" class="btn btn-custom mx-2">Créer une critique</a>
         </div>
+
+        <!-- Affichage des tickets et critiques -->
+        {% for ticket, review in tickets_with_reviews %}
+        <div class="ticket-card neumorph-container mb-4">
+            <div class="card-body">
+                {% if ticket.image %}
+                <div class="ticket-image neumorph-container mb-2">
+                    <img src="{{ ticket.image.url }}" class="img-fluid rounded-start" alt="Image du ticket">
+                </div>
+                {% endif %}
+                <div class="card-text">
+                <h5 class="card-title">{{ ticket.title }}</h5>
+                <p class="card-text">Publié par : <strong>{{ ticket.user.username }} le {{ ticket.time_created|date:"H:i, d M Y" }}</strong></p>
+                <p class="card-text">{{ ticket.description }}</p>
+                </div>
+                {% if ticket.image %}
+                <div class="ticket-image neumorph-container mb-2">
+                    <img src="{{ ticket.image.url }}" class="img-fluid rounded-start" alt="Image du ticket">
+                </div>
+                {% endif %}
+                
+
+{% if review %}
+<div class="review-card neumorph-container mt-3">
+    <div class="card-review-answer">
+        <h5 class="card-title">{{ review.headline }}</h5>
+        <p class="card-text-review">Publié par : <strong>{{ review.user.username }}</strong></p>
+        <p class="card-text-review">{{ review.body }}</p>
+        <p class="card-text-rating">
+            Note:
+            <span class="rating-stars">
+                {% for _ in "★★★★★"|slice:":review.rating" %}
+                    <i class="bi bi-star-fill"></i>
+                {% endfor %}
+                {% for _ in "☆☆☆☆☆"|slice:"review.rating:" %}
+                    <i class="bi bi-star"></i>
+                {% endfor %}
+            </span>
+        </p>
     </div>
-    {% endfor %}
-
-    <!-- Affichage des critiques autonomes -->
-    {% for review in autonomous_reviews %}
-    <div class="glass-box card mb-3 p-3">
-        <div class="card-body">
-            <h5 class="card-title">{{ review.headline }}</h5>
-            <p class="card-text">Note: {{ review.rating }}</p>
-            <p class="card-text">{{ review.body }}</p>
-            <p class="card-text"><small class="text-muted">{{ review.time_created|date:"H:i, d M Y" }}</small></p>
-        </div>
-    </div>
-    {% endfor %}
-
-    <!-- Affichage message en cas d'absence de résultats -->
-    {% if not tickets_with_reviews and not autonomous_reviews %}
-    <p class="text-center glass-box p-3">Aucun post trouvé pour ce livre.</p>
-    {% endif %}
-
 </div>
+{% else %}
+<a href="{% url 'create_review' ticket.id %}" class="btn btn-custom mt-2">Répondre</a>
+{% endif %}
+
+
+                </div>
+               
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Affichage des critiques autonomes -->
+        {% for review in autonomous_reviews %}
+        <div class="review-card neumorph-container mb-3">
+            <div class="card-body">
+                <h5 class="card-title text-success">{{ review.headline }}</h5>
+                <p class="card-text"><small class="text-muted">{{ review.time_created|date:"H:i, d M Y" }}</small></p>
+                <p class="card-text">Note: {{ review.rating }}</p>
+                <p class="card-text">Publié par : <strong>{{ review.user.username }}</strong></p>
+                <p class="card-text">{{ review.body }}</p>
+                <p class="card-text"><small class="text-muted">{{ review.time_created|date:"H:i, d M Y" }}</small></p>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Affichage message en cas d'absence de résultats -->
+        {% if not tickets_with_reviews and not autonomous_reviews %}
+        <p class="text-center">Aucun post trouvé pour ce livre.</p>
+        {% endif %}
+    </div>
+</div>
+
 {% endblock %}

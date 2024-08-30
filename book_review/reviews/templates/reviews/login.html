@@ -9,20 +9,32 @@ background-repeat: no-repeat;
 background-attachment: fixed;
 {% endblock %} 
 
+{% block title %}Connexion{% endblock %}
+
 {% block content %}
-<div class="container">
-    <h2 class="text-center">Connexion</h2>
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+<div class="login-container">
+    <div class="login-card glassbox">
+        <div class="login-header">
+            Connexion
+        </div>
+        <div class="login-body">
             <form method="post" action="{% url 'login' %}">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Se connecter</button>
+                <div class="form-group">
+                    <label for="username">Nom d'utilisateur :</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe :</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn-custom">Se connecter</button>
             </form>
         </div>
-        <div class="col-md-6 text-center">
-            <h3>Pas encore inscrit?</h3>
-            <a href="{% url 'register' %}" class="btn btn-secondary">S'inscrire</a>
+        <div class="login-footer">
+            <p class="mt-4 sub-link">
+                Pas encore inscrit? <a href="{% url 'register' %}" class="register-link">S'inscrire</a>
+            </p>
         </div>
     </div>
 </div>

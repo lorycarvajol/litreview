@@ -19,7 +19,9 @@ class Ticket(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField(blank=True, max_length=2048)
     image = models.ImageField(upload_to="images/", null=True, blank=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="tickets"
+    )  # Association à User
     time_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -31,7 +33,7 @@ class Review(models.Model):
     headline = models.CharField(max_length=128)
     rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(6)])
     body = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
     time_created = models.DateTimeField(auto_now_add=True)
 
 

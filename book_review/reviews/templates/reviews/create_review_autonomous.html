@@ -9,40 +9,48 @@ background-size: cover;
 background-position: center;
 background-repeat: no-repeat;
 background-attachment: fixed;
-{% endblock %} 
+{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="h3">Créer une critique</h1>
-    <form method="post" enctype="multipart/form-data">
+<div class="review-create-container mt-4">
+    <h1 class="review-create-title">Créer une critique</h1>
+    <form method="post" enctype="multipart/form-data" class="review-create-form">
         {% csrf_token %}
-        <div class="mb-4">
-            <h4>Livre / Article</h4>
-            <div class="mb-3">
+        <div class="review-section">
+            <h4 class="review-subtitle">Livre / Article</h4>
+            <div class="form-group">
                 {{ form.ticket_title.label_tag }}{{ form.ticket_title }}
             </div>
-            <div class="mb-3">
+            <div class="form-group">
                 {{ form.ticket_description.label_tag }}{{ form.ticket_description }}
             </div>
-            <div class="mb-3">
+            <div class="form-group">
                 {{ form.ticket_image.label_tag }}{{ form.ticket_image }}
             </div>
         </div>
 
-        <div class="mb-4">
-            <h4>Critique</h4>
-            <div class="mb-3">
+        <div class="review-section">
+            <h4 class="review-subtitle">Critique</h4>
+            <div class="form-group">
                 {{ form.review_headline.label_tag }}{{ form.review_headline }}
             </div>
-            <div class="mb-3">
-                {{ form.review_rating.label_tag }}{{ form.review_rating }}
+            <div class="form-group">
+                {{ form.review_rating.label_tag }}
+                <div class="rating-stars">
+                    {% for i in form.review_rating.field.choices %}
+                        <label class="star-rating" for="id_review_rating_{{ i.0 }}">
+                            <input type="radio" name="review_rating" value="{{ i.0 }}" id="id_review_rating_{{ i.0 }}" {% if form.review_rating.value == i.0|stringformat:"s" %}checked{% endif %}>
+                            <i class="bi {% if form.review_rating.value|stringformat:"s" == i.0|stringformat:"s" %}bi-star-fill{% else %}bi-star{% endif %}"></i>
+                        </label>
+                    {% endfor %}
+                </div>
             </div>
-            <div class="mb-3">
+            <div class="form-group">
                 {{ form.review_body.label_tag }}{{ form.review_body }}
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Envoyer</button>
+        <button type="submit" class="btn btn-custom-submit">Envoyer</button>
     </form>
 </div>
 {% endblock %}

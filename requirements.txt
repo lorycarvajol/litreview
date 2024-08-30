@@ -1,0 +1,6 @@
+Django==5.1
+django-crispy-forms==1.14.0
+pillow==10.0.0  # Pour gérer les images
+whitenoise==6.4.0  # Pour gérer les fichiers statiques en production
+libsass==0.21.0  # Pour compiler SASS en CSS
+django-compressor==4.3  # Pour compresser les fichiers CSS/JS

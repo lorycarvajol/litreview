@@ -250,14 +250,18 @@ def home_view(request):
 def register(request):
     if request.method == "POST":
         print("Form submitted")
-        form = CustomUserCreationForm(request.POST, request.FILES)
+        form = CustomUserCreationForm(request.POST)
+        # Suppression de la gestion des fichiers, puisque l'avatar n'est plus utilisé
         if form.is_valid():
             print("Form is valid")
             user = form.save()
-            if "avatar" in request.FILES:
-                user.profile.avatar = request.FILES["avatar"]
-                user.profile.save()
-            login(request, user)
+
+            # Authentification basée sur un système alternatif à implémenter ici
+            # Exemple : Utilisation de tokens ou autres systèmes
+
+            login(
+                request, user
+            )  # Assurez-vous que `login` est compatible avec le nouveau système d'authentification.
             return redirect("home")
         else:
             print("Form is not valid")

@@ -5,10 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import Review, Ticket
 
 
-from django import forms
-from .models import Review, Ticket
-
-
+# Formulaire pour la création de tickets
 class TicketForm(forms.ModelForm):
     class Meta:
         model = Ticket
@@ -20,6 +17,7 @@ class TicketForm(forms.ModelForm):
         }
 
 
+# Formulaire pour les critiques autonomes (création de tickets et critiques simultanément)
 class AutonomousReviewForm(forms.Form):
     # Champs pour le Livre/Article
     ticket_title = forms.CharField(
@@ -50,6 +48,7 @@ class AutonomousReviewForm(forms.Form):
     )
 
 
+# Formulaire pour les critiques
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
@@ -61,6 +60,7 @@ class ReviewForm(forms.ModelForm):
         }
 
 
+# Formulaire d'authentification personnalisé (ajuster si une méthode alternative est utilisée)
 class CustomAuthenticationForm(AuthenticationForm):
     username = forms.CharField(
         widget=forms.TextInput(
@@ -74,6 +74,7 @@ class CustomAuthenticationForm(AuthenticationForm):
     )
 
 
+# Formulaire d'inscription personnalisé sans avatar et sans mots de passe
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(
         required=True,
@@ -81,13 +82,10 @@ class CustomUserCreationForm(UserCreationForm):
             attrs={"class": "form-control", "placeholder": "Adresse email"}
         ),
     )
-    avatar = forms.ImageField(
-        required=False, widget=forms.FileInput(attrs={"class": "form-control"})
-    )
 
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2", "avatar"]
+        fields = ["username", "email"]
 
     def save(self, commit=True):
         user = super().save(commit=False)

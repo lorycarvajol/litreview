@@ -9,27 +9,30 @@ background-size: cover;
 background-position: center;
 background-repeat: no-repeat;
 background-attachment: fixed;
-{% endblock %} 
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2 class="text-center">Inscription</h2>
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form method="post" enctype="multipart/form-data" action="{% url 'register' %}">
+<div class="register-container">
+    <div class="register-card glassbox">
+        <div class="register-header">
+            Inscription
+        </div>
+        <div class="register-body">
+            <form method="post" action="{% url 'register' %}">
                 {% csrf_token %}
-                {{ form.as_p }}
+                {{ form.as_p }}  <!-- Affiche les champs du formulaire adaptés -->
                 {% if form.errors %}
                     <div class="alert alert-danger">
                         {{ form.errors }}
                     </div>
                 {% endif %}
-                <button type="submit" class="btn btn-primary">S'inscrire</button>
+                <button type="submit" class="btn-custom">S'inscrire</button>
             </form>
         </div>
-        <div class="col-md-6 text-center">
-            <h3>Déjà inscrit?</h3>
-            <a href="{% url 'login' %}" class="btn btn-secondary">Se connecter</a>
+        <div class="register-footer">
+            <p class="mt-4">
+                Déjà inscrit ? <a href="{% url 'login' %}" class="login-link">Se connecter</a>
+            </p>
         </div>
     </div>
 </div>

@@ -33,7 +33,14 @@ background-attachment: fixed;
         </div>
         <div class="mb-3">
             <label for="id_rating" class="form-label">Note</label>
-            {{ form.rating }}
+            <div class="rating-stars">
+                {% for i in form.rating.field.choices %}
+                    <label class="star-rating" for="id_rating_{{ i.0 }}">
+                        <input type="radio" name="rating" value="{{ i.0 }}" id="id_rating_{{ i.0 }}" {% if form.rating.value == i.0|stringformat:"s" %}checked{% endif %}>
+                        <i class="bi {% if form.rating.value|stringformat:"s" == i.0|stringformat:"s" %}bi-star-fill{% else %}bi-star{% endif %}"></i>
+                    </label>
+                {% endfor %}
+            </div>
         </div>
         <div class="mb-3">
             <label for="id_body" class="form-label">Commentaire</label>

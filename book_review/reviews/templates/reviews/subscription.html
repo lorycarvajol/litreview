@@ -1,65 +1,74 @@
 {% extends "base_generic.html" %}
 
+{% load static %}
+{% block background_image %}
+background-image: url('{% static "images/subscribe.png" %}');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+{% endblock %}
+
 {% block title %}Abonnements{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Rechercher des utilisateurs</h2>
-    <div class="form-group">
-        <input type="text" id="user-search-input" class="form-control" placeholder="Rechercher un utilisateur...">
+<div class="subscription-container">
+    <div class="glassbox subscription-card">
+        <h2>Rechercher des utilisateurs</h2>
+        <div class="form-group">
+            <input type="text" id="user-search-input" class="form-control" placeholder="Rechercher un utilisateur...">
+        </div>
+        <ul id="search-results" class="list-group mt-3" style="display:none;"></ul>
 
+        <h2 class="mt-5">Utilisateurs que vous suivez</h2>
+        <ul class="list-group">
+            {% for user in following_users %}
+            <li class="list-group-item d-flex justify-content-between align-items-center glassbox-item">
+                {{ user.username }}
+                <div>
+                    <a href="{% url 'unfollow_user' user.id %}" class="btn btn-danger btn-sm">Ne plus suivre</a>
+                    <a href="{% url 'followed_user_posts' user.id %}" class="btn btn-primary btn-sm">Voir les posts</a>
+                </div>
+            </li>
+            {% empty %}
+            <li class="list-group-item glassbox-item">Vous ne suivez encore personne.</li>
+            {% endfor %}
+        </ul>
     </div>
-    <ul id="search-results" class="list-group mt-3" style="display:none;"></ul>
-
-    <h2 class="mt-5">Utilisateurs que vous suivez</h2>
-    <ul class="list-group">
-        {% for user in following_users %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ user.username }}
-            <div>
-                <a href="{% url 'unfollow_user' user.id %}" class="btn btn-danger btn-sm">Ne plus suivre</a>
-                <a href="{% url 'followed_user_posts' user.id %}" class="btn btn-primary btn-sm">Voir les posts</a>
-            </div>
-        </li>
-        {% empty %}
-        <li class="list-group-item">Vous ne suivez encore personne.</li>
-        {% endfor %}
-    </ul>
 </div>
 
 <script>
     document.getElementById('user-search-input').addEventListener('input', function() {
-    const query = this.value;
+        const query = this.value;
 
-    if (query.length > 0) {
-        fetch(`/subscriptions/search/?q=${query}`)
-            .then(response => response.json())
-            .then(data => {
-                const searchResults = document.getElementById('search-results');
-                searchResults.innerHTML = '';
+        if (query.length > 0) {
+            fetch(`/subscriptions/search/?q=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const searchResults = document.getElementById('search-results');
+                    searchResults.innerHTML = '';
 
-                if (data.users.length > 0) {
-                    searchResults.style.display = 'block';
-                    data.users.forEach(user => {
-                        const li = document.createElement('li');
-                        li.className = 'list-group-item d-flex justify-content-between align-items-center';
-                        li.innerHTML = `
-                            ${user.username}
-                            <a href="/follow/${user.id}/" class="btn btn-success btn-sm">Suivre</a>
-                        `;
-                        searchResults.appendChild(li);
-                    });
-                } else {
-                    searchResults.style.display = 'none';
-                }
-            })
-            .catch(error => {
-                console.error('Error during user search:', error);
-            });
-    } else {
-        document.getElementById('search-results').style.display = 'none';
-    }
-});
-
+                    if (data.users.length > 0) {
+                        searchResults.style.display = 'block';
+                        data.users.forEach(user => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item d-flex justify-content-between align-items-center glassbox-item';
+                            li.innerHTML = `
+                                ${user.username}
+                                <a href="/follow/${user.id}/" class="btn btn-success btn-sm">Suivre</a>
+                            `;
+                            searchResults.appendChild(li);
+                        });
+                    } else {
+                        searchResults.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during user search:', error);
+                });
+        } else {
+            document.getElementById('search-results').style.display = 'none';
+        }
+    });
 </script>
 {% endblock %}

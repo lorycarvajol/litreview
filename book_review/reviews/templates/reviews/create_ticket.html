@@ -12,11 +12,11 @@ background-attachment: fixed;
 {% endblock %} 
 
 {% block content %}
-<div class="container mt-4">
+<div class="ticket-container mt-4">
     <h2>Créer un ticket</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="mb-3">
+        <div class="ticket-card mb-3">
             <label for="id_title" class="form-label">Titre</label>
             {{ form.title }}
         </div>
